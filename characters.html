@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Играбельные Персонажи — Магия Эльфийского Света</title>
+  <link rel="icon" href="img/logo.png" type="image/png" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: url('img/background3.png') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      touch-action: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      position: relative;
+    }
+
+    .btn-back {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(100, 100, 100, 0.7);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+
+    .btn-back:hover {
+      background: rgba(80, 80, 80, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .characters-container {
+      text-align: center;
+      max-width: 1000px;
+      width: 90%;
+      z-index: 10;
+    }
+
+    .character-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .character-logo {
+      width: 150px;
+      height: auto;
+      cursor: pointer;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+    }
+
+    .character-logo:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3));
+    }
+
+    .character-full {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      animation: fadeInOverlay 0.5s ease-out;
+    }
+
+    @keyframes fadeInOverlay {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .character-full-content {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 900px;
+      width: 95%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      overflow-y: auto;
+      max-height: 90vh;
+      animation: fadeInContent 0.6s ease-out;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes fadeInContent {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .profile-header {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .profile-img {
+      width: 320px;
+      height: 450px;
+      object-fit: contain;
+      object-position: center top;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      background: white;
+      padding: 12px;
+    }
+
+    .profile-info {
+      flex: 1;
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 10px;
+      border-left: 5px solid #ff8c00;
+    }
+
+    .profile-info h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #333;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .profile-stats p {
+      margin: 5px 0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .profile-stats strong {
+      color: #333;
+    }
+
+    .profile-story {
+      margin-top: 20px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #333;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: rgba(220, 220, 220, 0.9);
+    }
+
+    @media screen and (max-width: 768px) {
+      .character-logo {
+        width: 120px;
+      }
+      .profile-header {
+        flex-direction: column;
+        align-items: center;
+      }
+      .profile-img {
+        width: 220px;
+        height: 320px;
+      }
+      .character-full-content {
+        padding: 16px;
+        max-width: 95vw;
+      }
+      .btn-back {
+        font-size: 12px;
+        padding: 6px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="btn-back" onclick="location.href='gallery.html'">← Вернуться в галерею</button>
+
+  <div class="characters-container">
+    <h1 style="color: white; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+      ИГРАБЕЛЬНЫЕ ПЕРСОНАЖИ
+    </h1>
+
+    <div class="character-grid">
+      <img src="img/id0logo.png" alt="Эллия" class="character-logo" data-id="id0" />
+      <img src="img/id1logo.png" alt="Лира" class="character-logo" data-id="id1" />
+      <img src="img/id2logo.png" alt="Аня" class="character-logo" data-id="id2" />
+      <img src="img/id3logo.png" alt="Сильвия" class="character-logo" data-id="id3" />
+      <img src="img/id4logo.png" alt="Мира" class="character-logo" data-id="id4" />
+      <img src="img/id5logo.png" alt="Кайлен" class="character-logo" data-id="id5" />
+      <img src="img/id6logo.png" alt="Торин" class="character-logo" data-id="id6" />
+      <img src="img/id7logo.png" alt="Alice" class="character-logo" data-id="id7" />
+    </div>
+  </div>
+
+  <div id="character-full" class="character-full">
+    <div class="character-full-content">
+      <button class="close-btn" onclick="hideCharacter()">Закрыть</button>
+      <div class="profile-header">
+        <img id="full-img" class="profile-img" src="" alt="Полное изображение" />
+        <div class="profile-info">
+          <h2 id="char-name"></h2>
+          <div class="profile-stats">
+            <p><strong>Имя:</strong> <span id="char-name-stat"></span></p>
+            <p><strong>Раса:</strong> <span id="char-race"></span></p>
+            <p><strong>Класс:</strong> <span id="char-class"></span></p>
+            <p><strong>Характер:</strong> <span id="char-personality"></span></p>
+          </div>
+        </div>
+      </div>
+      <div class="profile-story">
+        <h3>История</h3>
+        <p id="char-story"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const characters = {
+      id0: {
+        name: "Эллия",
+        race: "Эльфийка",
+        class: "Маг",
+        personality: "Добрая, решительная, немного игривая",
+        story: "Эллия — дочь древнего эльфийского клана, живущего в лесах Аэлиона. Она выросла среди деревьев и магии, научилась стрелять из лука ещё до того, как научилась говорить. Её целью стало защитить мир от тьмы, что пробудилась после падения Звездного Храма. Она не боится одиночества, но ценит друзей — особенно тех, кто готов разделить с ней приключения. В бою она быстра, точна и неистова — её стрелы летят, как молнии. Но за этой силой скрывается доброе сердце — она всегда поможет тому, кто в беде, даже если это враг..."
+      },
+      id1: {
+        name: "Лира",
+        race: "Эльфийка",
+        class: "Лучница",
+        personality: "Спокойная, меткая, верная своему долгу",
+        story: "Лира — стражница древних границ Эльфийского Леса. С детства она тренировалась под руководством лучших наставников, и её стрелы никогда не промахиваются. Она хранит покой леса и не терпит нарушителей. Хотя Лира кажется холодной, на самом деле она глубоко предана своим близким и готова отдать жизнь за тех, кого любит. Её лук — не просто оружие, а часть её души."
+      },
+      id2: {
+        name: "Аня",
+        race: "Человек",
+        class: "Разведчица",
+        personality: "Храбрая, ловкая, заботливая",
+        story: "Аня — простая деревенская девушка из уютной деревушки у подножия гор. Когда на её родной дом напали разбойники, она не стала ждать помощи — взяла отцовский кинжал и встала на защиту семьи. С тех пор она тренируется каждый день, чтобы быть сильной. Хотя она не маг и не эльфийка, её смелость и верность делают её настоящей героиней. Она верит, что даже самый обычный человек может изменить мир."
+      },
+      id3: {
+        name: "Сильвия",
+        race: "Эльфийка",
+        class: "Целительница",
+        personality: "Мудрая, сострадательная, спокойная",
+        story: "Сильвия — хранительница древнего источника жизни в сердце Эльфийского Леса. Она умеет исцелять раны тела и души, и её голос успокаивает даже самых яростных зверей. Хотя она редко покидает священные земли, в час великой беды она готова встать на защиту мира. Её магия — это дар природы, и она использует её с величайшей ответственностью."
+      },
+      id4: {
+        name: "Мира",
+        race: "Человек",
+        class: "Воин",
+        personality: "Смелая, честная, упрямая",
+        story: "Мира — дочь кузнеца из королевского города. С детства она мечтала не о балах, а о битвах. Взяв меч отца, она прошла путь от простой рекрута до капитана королевской гвардии. Она верит в справедливость и всегда защищает слабых. Её девиз: «Сила — в чести, а не в стали»."
+      },
+      id5: {
+        name: "Кайлен",
+        race: "Эльф",
+        class: "Следопыт",
+        personality: "Молчаливый, наблюдательный, верный",
+        story: "Кайлен — странник, который знает каждый лист в лесу и каждый камень в горах. Он редко говорит, но его действия говорят громче слов. Он помогает путникам найти дорогу и охотникам — добычу. Но если враг угрожает его дому, он становится тенью смерти. Его лук и нож — его голос."
+      },
+      id6: {
+        name: "Торин",
+        race: "Человек",
+        class: "Паладин",
+        personality: "Доблестный, благородный, стойкий",
+        story: "Торин — рыцарь Ордена Света, последний защитник древнего монастыря. Он клялся защищать мир от тьмы, и его щит уже много лет стоит на страже человечества. Он не ищет славы, но его имя знают все. В бою он — непоколебимая стена, а в мире — пример для подражания."
+      },
+      id7: {
+        name: "Alice",
+        race: "Эльф",
+        class: "???",
+        personality: "???",
+        story: "Информация засекречена. Только избранные знают правду..."
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('character-full').style.display = 'none';
+
+      const logos = document.querySelectorAll('.character-logo');
+      logos.forEach(logo => {
+        logo.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          showCharacter(id);
+        });
+      });
+    });
+
+    function showCharacter(id) {
+      const char = characters[id];
+      if (!char) return;
+
+      document.getElementById('full-img').src = `img/${id}.png`;
+      document.getElementById('char-name').textContent = char.name;
+      document.getElementById('char-name-stat').textContent = char.name;
+      document.getElementById('char-race').textContent = char.race;
+      document.getElementById('char-class').textContent = char.class;
+      document.getElementById('char-personality').textContent = char.personality;
+      document.getElementById('char-story').textContent = char.story;
+
+      document.getElementById('character-full').style.display = 'flex';
+    }
+
+    function hideCharacter() {
+      document.getElementById('character-full').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

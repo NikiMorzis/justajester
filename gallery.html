@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Галерея Персонажей — Магия Эльфийского Света</title>
+  <link rel="icon" href="img/logo.png" type="image/png" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: url('img/background2.png') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      touch-action: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      position: relative;
+    }
+
+    .btn-back {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(100, 100, 100, 0.7);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+
+    .btn-back:hover {
+      background: rgba(80, 80, 80, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .gallery-container {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .tyanka {
+      width: 800px;
+      position: absolute;
+      top: 50%;
+      right: -30%;
+      transform: translateY(-20%);
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    #dialog-box {
+      position: absolute;
+      top: 50%;
+      left: 10%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      max-width: 500px;
+      text-align: left;
+      z-index: 10;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    #dialog-text {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+
+    .btn-choice {
+      display: none;
+      width: 100%;
+      background: linear-gradient(135deg, #ff3333, #ff8c00);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 8px 0;
+      box-shadow:
+        0 4px 10px rgba(255, 51, 51, 0.3),
+        inset 0 -2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .btn-choice:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow:
+        0 6px 15px rgba(255, 51, 51, 0.4),
+        0 0 15px rgba(255, 100, 50, 0.5);
+    }
+
+    .btn-choice:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50%) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .tyanka {
+        width: 180px;
+        right: 5%;
+      }
+      #dialog-box {
+        left: 5%;
+        max-width: 90vw;
+        padding: 16px;
+      }
+      #dialog-text {
+        font-size: 16px;
+      }
+      .btn-choice {
+        font-size: 14px;
+        padding: 10px 16px;
+      }
+      .btn-back {
+        font-size: 12px;
+        padding: 6px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Кнопка "Вернуться в меню" -->
+  <button class="btn-back" onclick="location.href='index.html'">← Вернуться в меню</button>
+
+  <div class="gallery-container">
+    <img src="img/id0.png" alt="Девушка-проводник" class="tyanka" />
+
+    <div id="dialog-box">
+      <p id="dialog-text"></p>
+
+      <button class="btn-choice" data-target="characters.html">Покажи всех играбельных персонажей</button>
+      <button class="btn-choice" data-target="mobs.html">Покажи мобов</button>
+      <button class="btn-choice" data-target="npcs.html">Покажи НПС</button>
+    </div>
+  </div>
+
+  <!-- 🔊 Звук (скрыт) -->
+  <audio id="type-sound" src="sound/th1.mp3" preload="auto"></audio>
+
+  <script>
+    let audioContextInitialized = false;
+    const typeSound = document.getElementById('type-sound');
+
+    // Функция разблокировки звука
+    function unlockAudio() {
+      if (audioContextInitialized) return;
+      
+      // Попытка проиграть тихий звук для разблокировки
+      const audio = new Audio();
+      audio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA";
+      audio.play().then(() => {
+        audioContextInitialized = true;
+        document.body.removeEventListener('click', unlockAudio);
+        document.body.removeEventListener('touchstart', unlockAudio);
+      }).catch(() => {});
+    }
+
+    // Вешаем разблокировку на первый клик/касание
+    document.body.addEventListener('click', unlockAudio, { once: true });
+    document.body.addEventListener('touchstart', unlockAudio, { once: true });
+
+    // Функция воспроизведения звука
+    function playTypeSound() {
+      if (!audioContextInitialized) return;
+      
+      const sound = typeSound.cloneNode();
+      sound.volume = 0.7; // немного тише, чтобы не раздражало
+      sound.play().catch(e => console.log("Ошибка звука:", e));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const dialogText = document.getElementById('dialog-text');
+      const buttons = document.querySelectorAll('.btn-choice');
+
+      const messages = [
+        "Привет! Ты попал в Галерею Персонажей игры «Магия Эльфийского Света» ✨",
+        "Здесь ты можешь познакомиться с героями, монстрами и жителями мира.",
+        "Выбери, кого хочешь увидеть — я помогу тебе найти нужную страницу!"
+      ];
+
+      let currentMessageIndex = 0;
+
+      function typeWriter(text, index, onComplete) {
+        if (index < text.length) {
+          dialogText.textContent += text.charAt(index);
+          playTypeSound(); // 🔊 Звук каждой буквы
+          setTimeout(() => typeWriter(text, index + 1, onComplete), 50);
+        } else {
+          if (onComplete) onComplete();
+        }
+      }
+
+      function showNextMessage() {
+        if (currentMessageIndex < messages.length) {
+          const message = messages[currentMessageIndex];
+          dialogText.textContent = '';
+
+          typeWriter(message, 0, () => {
+            currentMessageIndex++;
+            if (currentMessageIndex === messages.length) {
+              buttons.forEach(btn => btn.style.display = 'block');
+            } else {
+              setTimeout(showNextMessage, 1000);
+            }
+          });
+        }
+      }
+
+      // Начинаем диалог
+      showNextMessage();
+
+      // Обработчик кнопок
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const targetPage = button.getAttribute('data-target');
+          buttons.forEach(btn => btn.style.display = 'none');
+
+          const response = "Да, хорошо! Сейчас покажу…";
+          dialogText.textContent = '';
+          typeWriter(response, 0, () => {
+            setTimeout(() => {
+              window.location.href = targetPage;
+            }, 1000);
+          });
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

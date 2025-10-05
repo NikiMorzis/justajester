@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>RPG SS</title>
+  <link rel="icon" href="img/logo.png" type="image/png" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: url('img/background.png') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      touch-action: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      position: relative;
+    }
+
+    .btn-settings {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(30, 144, 255, 0.85);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+
+    .btn-settings:hover {
+      background: rgba(30, 144, 255, 1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    .menu-container {
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      width: 350px;
+      height: auto;
+      margin-bottom: 0;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+      display: block;
+      vertical-align: bottom;
+      margin: 0 auto;
+    }
+
+    .company-title {
+      background: rgba(30, 144, 255, 0.9);
+      color: white;
+      padding: 10px 30px;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin: 0;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      backdrop-filter: blur(3px);
+    }
+
+    .game-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      margin: 4px 0;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    /* 🔥 ЭПИЧНАЯ КНОПКА "ИГРАТЬ" — теперь ведёт на gallery.html */
+    .btn-play {
+      position: relative;
+      background: linear-gradient(135deg, #ff3333, #ff8c00);
+      color: white;
+      border: none;
+      padding: 16px 48px;
+      border-radius: 50px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow:
+        0 8px 20px rgba(255, 51, 51, 0.4),
+        inset 0 -4px 10px rgba(0,0,0,0.2),
+        inset 0 4px 10px rgba(255,255,255,0.1);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .btn-play::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: 0.6s;
+      z-index: -1;
+    }
+
+    .btn-play:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow:
+        0 12px 25px rgba(255, 51, 51, 0.6),
+        0 0 20px rgba(255, 100, 50, 0.5),
+        inset 0 -4px 10px rgba(0,0,0,0.2),
+        inset 0 4px 10px rgba(255,255,255,0.15);
+      animation: pulse 2s infinite;
+    }
+
+    .btn-play:active {
+      transform: translateY(2px) scale(0.98);
+      box-shadow:
+        0 4px 12px rgba(255, 51, 51, 0.4),
+        inset 0 -4px 10px rgba(0,0,0,0.3);
+    }
+
+    .btn-play:hover::before {
+      left: 100%;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 
+        0 12px 25px rgba(255, 51, 51, 0.6),
+        0 0 20px rgba(255, 100, 50, 0.5),
+        inset 0 -4px 10px rgba(0,0,0,0.2);
+      }
+      50% { box-shadow: 
+        0 12px 25px rgba(255, 51, 51, 0.6),
+        0 0 35px rgba(255, 100, 50, 0.8),
+        inset 0 -4px 10px rgba(0,0,0,0.2);
+      }
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff;
+      }
+      to {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .logo {
+        width: 150px;
+      }
+      .company-title {
+        font-size: 16px;
+        padding: 8px 20px;
+      }
+      .game-title {
+        font-size: 20px;
+        margin: 2px 0;
+      }
+      .btn-play {
+        font-size: 20px;
+        padding: 14px 40px;
+      }
+      .btn-settings {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="btn-settings" onclick="alert('Настройки пока недоступны 😊')">
+    Настройки
+  </button>
+
+  <div class="menu-container">
+    <img src="img/logo.png" alt="Логотип" class="logo" />
+
+    <div class="company-title">
+      RPG SS
+    </div>
+
+    <div class="game-title">
+      Just a Jester Studio
+    </div>
+
+    <!-- Кнопка "Играть" теперь ведёт на gallery.html -->
+    <button class="btn-play" onclick="location.href='gallery.html'">
+      ИГРАТЬ
+    </button>
+  </div>
+
+</body>
+</html>
