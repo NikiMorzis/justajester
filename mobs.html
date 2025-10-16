@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Монстры — RPG SS</title>
+  <link rel="icon" href="img/logo.png" type="image/png" />
+  <style>
+    /* ... (весь CSS без изменений) ... */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: url('img/background2.png') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      touch-action: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      position: relative;
+    }
+    .btn-back {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(100, 100, 100, 0.7);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+    .btn-back:hover {
+      background: rgba(80, 80, 80, 0.9);
+      transform: translateY(-1px);
+    }
+    .mobs-container {
+      text-align: center;
+      max-width: 1000px;
+      width: 90%;
+      z-index: 10;
+    }
+    .mob-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    .mob-card {
+      width: 150px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border: 2px solid rgba(255, 255, 255, 0.6);
+    }
+    .mob-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+    .mob-name { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+    .mob-type { font-size: 13px; color: #666; }
+    .mob-full {
+      display: none; /* 🔥 КЛЮЧЕВОЙ СТИЛЬ */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .mob-full-content {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 800px;
+      width: 95%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      overflow-y: auto;
+      max-height: 90vh;
+    }
+    .mob-full-info h2 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      color: #d32f2f;
+      text-align: center;
+    }
+    .mob-stats {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+    }
+    .mob-stats p { margin: 5px 0; font-size: 16px; }
+    .danger-level {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+    .level-boss { background: #f3e5f5; color: #7b1fa2; }
+    .level-high { background: #ffebee; color: #c62828; }
+    .level-medium { background: #fff8e1; color: #f57f17; }
+    .level-low { background: #e8f5e9; color: #2e7d32; }
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #333;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    @media screen and (max-width: 768px) {
+      .mob-card { width: 130px; padding: 12px; }
+      .mob-full-content { padding: 16px; max-width: 95vw; }
+      .btn-back { font-size: 12px; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="btn-back" onclick="location.href='gallery.html'">← Вернуться в галерею</button>
+
+  <div class="mobs-container">
+    <h1 style="color: white; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+      МОНСТРЫ И ВРАГИ
+    </h1>
+
+    <div class="mob-grid">
+      <div class="mob-card" data-id="astria">
+        <div class="mob-name">Астрия</div>
+        <div class="mob-type">Босс</div>
+      </div>
+      <div class="mob-card" data-id="orcs">
+        <div class="mob-name">Орки</div>
+        <div class="mob-type">Пехота</div>
+      </div>
+      <div class="mob-card" data-id="demons">
+        <div class="mob-name">Демоны</div>
+        <div class="mob-type">Элита</div>
+      </div>
+      <div class="mob-card" data-id="goblins">
+        <div class="mob-name">Гоблины</div>
+        <div class="mob-type">Лазутчики</div>
+      </div>
+      <div class="mob-card" data-id="spirits">
+        <div class="mob-name">Духи</div>
+        <div class="mob-type">Проклятые</div>
+      </div>
+      <div class="mob-card" data-id="guardians">
+        <div class="mob-name">Стражи</div>
+        <div class="mob-type">Падшие</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Профиль монстра -->
+  <div id="mob-full" class="mob-full">
+    <div class="mob-full-content">
+      <button class="close-btn" onclick="hideMob()">Закрыть</button>
+      <div class="mob-full-info">
+        <h2 id="mob-name"></h2>
+        <div class="mob-stats">
+          <p><strong>Тип:</strong> <span id="mob-type"></span></p>
+          <p><strong>Угроза:</strong> <span id="mob-danger" class="danger-level"></span></p>
+          <p><strong>Описание:</strong></p>
+          <p id="mob-desc"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔊 Музыка (вставь сюда код из Части 1) -->
+  <!-- ... музыкальный блок ... -->
+
+  <script>
+    const mobs = {
+      astria: { name: "Астрия", type: "Повелительница Тьмы", danger: "БОСС", dangerClass: "level-boss", desc: "Главная антагонистка..." },
+      orcs: { name: "Орки-разорители", type: "Пехота Тьмы", danger: "СРЕДНИЙ", dangerClass: "level-medium", desc: "Грубые, сильные..." },
+      demons: { name: "Теневые демоны", type: "Элитные слуги Астрии", danger: "ВЫСОКИЙ", dangerClass: "level-high", desc: "Созданы из самой Тьмы..." },
+      goblins: { name: "Гоблины-лазутчики", type: "Разведчики", danger: "НИЗКИЙ", dangerClass: "level-low", desc: "Мелкие, но коварные..." },
+      spirits: { name: "Искажённые духи", type: "Проклятые создания", danger: "ВЫСОКИЙ", dangerClass: "level-high", desc: "Бывшие духи природы..." },
+      guardians: { name: "Стражи печати (падшие)", type: "Бывшие защитники", danger: "ВЫСОКИЙ", dangerClass: "level-high", desc: "Эльфы-маги, предавшие..." }
+    };
+
+    // 🔥 ГАРАНТИРОВАННО СКРЫВАЕМ ПРОФИЛЬ ПРИ ЗАГРУЗКЕ
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('mob-full').style.display = 'none';
+
+      const cards = document.querySelectorAll('.mob-card');
+      cards.forEach(card => {
+        card.addEventListener('click', () => {
+          const id = card.getAttribute('data-id');
+          showMob(id);
+        });
+      });
+    });
+
+    function showMob(id) {
+      const mob = mobs[id];
+      if (!mob) return;
+      document.getElementById('mob-name').textContent = mob.name;
+      document.getElementById('mob-type').textContent = mob.type;
+      const dangerEl = document.getElementById('mob-danger');
+      dangerEl.textContent = mob.danger;
+      dangerEl.className = `danger-level ${mob.dangerClass}`;
+      document.getElementById('mob-desc').textContent = mob.desc;
+      document.getElementById('mob-full').style.display = 'flex';
+    }
+
+    function hideMob() {
+      document.getElementById('mob-full').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

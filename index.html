@@ -190,6 +190,104 @@
     }
   </style>
 </head>
+<!-- 🔊 Единая фоновая музыка (сохраняет позицию) -->
+<audio id="bg-music" src="sound/bg-music.mp3" preload="auto"></audio>
+<div id="music-toggle" style="
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000;
+  font-size: 18px;
+">🎵</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const bgMusic = document.getElementById('bg-music');
+    const toggleBtn = document.getElementById('music-toggle');
+    bgMusic.volume = 0.5; // в 2 раза тише
+
+    // Восстанавливаем позицию и состояние из localStorage
+    const savedTime = localStorage.getItem('bgMusicTime');
+    const isPlaying = localStorage.getItem('bgMusicPlaying') === 'true';
+    if (savedTime) bgMusic.currentTime = parseFloat(savedTime);
+
+    function unlockAndPlay() {
+      bgMusic.play().then(() => {
+        toggleBtn.textContent = '🔇';
+        localStorage.setItem('bgMusicPlaying', 'true');
+      }).catch(() => {});
+    }
+
+    // Сохраняем позицию каждые 2 секунды
+    setInterval(() => {
+      if (!bgMusic.paused) {
+        localStorage.setItem('bgMusicTime', bgMusic.currentTime.toString());
+      }
+    }, 2000);
+
+    // Разблокировка при первом клике
+    document.body.addEventListener('click', () => {
+      if (!bgMusic.paused) return;
+      unlockAndPlay();
+    }, { once: true });
+
+    // Переключение
+    toggleBtn.addEventListener('click', () => {
+      if (bgMusic.paused) {
+        unlockAndPlay();
+      } else {
+        bgMusic.pause();
+        toggleBtn.textContent = '🎵';
+        localStorage.setItem('bgMusicPlaying', 'false');
+      }
+    });
+
+    // Если музыка уже должна играть — запускаем
+    if (isPlaying && savedTime) {
+      setTimeout(unlockAndPlay, 100);
+    }
+  });
+</script>
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const bgMusic = document.getElementById('bg-music');
+    const toggleBtn = document.getElementById('music-toggle');
+    let isPlaying = false;
+
+    // Разблокировка аудио при первом клике
+    function unlockAudio() {
+      bgMusic.play().then(() => {
+        isPlaying = true;
+        toggleBtn.textContent = '🔇';
+      }).catch(() => {});
+      document.body.removeEventListener('click', unlockAudio);
+    }
+    document.body.addEventListener('click', unlockAudio, { once: true });
+
+    // Переключение музыки
+    toggleBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        bgMusic.pause();
+        toggleBtn.textContent = '🎵';
+        isPlaying = false;
+      } else {
+        bgMusic.play();
+        toggleBtn.textContent = '🔇';
+        isPlaying = true;
+      }
+    });
+  });
+</script>
 <body>
 
   <button class="btn-settings" onclick="alert('Настройки пока недоступны 😊')">

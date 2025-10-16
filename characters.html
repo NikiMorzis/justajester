@@ -246,6 +246,104 @@
     }
   </style>
 </head>
+<!-- 🔊 Единая фоновая музыка (сохраняет позицию) -->
+<audio id="bg-music" src="sound/bg-music.mp3" preload="auto"></audio>
+<div id="music-toggle" style="
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000;
+  font-size: 18px;
+">🎵</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const bgMusic = document.getElementById('bg-music');
+    const toggleBtn = document.getElementById('music-toggle');
+    bgMusic.volume = 0.5; // в 2 раза тише
+
+    // Восстанавливаем позицию и состояние из localStorage
+    const savedTime = localStorage.getItem('bgMusicTime');
+    const isPlaying = localStorage.getItem('bgMusicPlaying') === 'true';
+    if (savedTime) bgMusic.currentTime = parseFloat(savedTime);
+
+    function unlockAndPlay() {
+      bgMusic.play().then(() => {
+        toggleBtn.textContent = '🔇';
+        localStorage.setItem('bgMusicPlaying', 'true');
+      }).catch(() => {});
+    }
+
+    // Сохраняем позицию каждые 2 секунды
+    setInterval(() => {
+      if (!bgMusic.paused) {
+        localStorage.setItem('bgMusicTime', bgMusic.currentTime.toString());
+      }
+    }, 2000);
+
+    // Разблокировка при первом клике
+    document.body.addEventListener('click', () => {
+      if (!bgMusic.paused) return;
+      unlockAndPlay();
+    }, { once: true });
+
+    // Переключение
+    toggleBtn.addEventListener('click', () => {
+      if (bgMusic.paused) {
+        unlockAndPlay();
+      } else {
+        bgMusic.pause();
+        toggleBtn.textContent = '🎵';
+        localStorage.setItem('bgMusicPlaying', 'false');
+      }
+    });
+
+    // Если музыка уже должна играть — запускаем
+    if (isPlaying && savedTime) {
+      setTimeout(unlockAndPlay, 100);
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const bgMusic = document.getElementById('bg-music');
+    const toggleBtn = document.getElementById('music-toggle');
+    let isPlaying = false;
+
+    // Разблокировка аудио при первом клике
+    function unlockAudio() {
+      bgMusic.play().then(() => {
+        isPlaying = true;
+        toggleBtn.textContent = '🔇';
+      }).catch(() => {});
+      document.body.removeEventListener('click', unlockAudio);
+    }
+    document.body.addEventListener('click', unlockAudio, { once: true });
+
+    // Переключение музыки
+    toggleBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        bgMusic.pause();
+        toggleBtn.textContent = '🎵';
+        isPlaying = false;
+      } else {
+        bgMusic.play();
+        toggleBtn.textContent = '🔇';
+        isPlaying = true;
+      }
+    });
+  });
+</script>
 <body>
 
   <button class="btn-back" onclick="location.href='gallery.html'">← Вернуться в галерею</button>
@@ -334,8 +432,8 @@
         name: "Дарья",
         race: "Человек",
         raceClass: "human",
-        class: "Воин",
-        classIcon: "⚔️",
+        class: "Разведчица",
+        classIcon: "🔍",
         personality: "Циничная, колючая, с саркастичным юмором. На первый взгляд — отстранённая и безразличная, но на деле — преданная до фанатизма тем немногим, кому доверяет. Не прощает предательства. Любит поддразнивать Лиру, но первой бросится ей на помощь.",
         story: "Родилась в большом городе, где ценили ум, ловкость и молчание. Её отдали в школу для разведчиков — не из-за таланта, а потому что семья была бедной. Там её учили быть тенью: не задавать вопросов, не проявлять эмоций, не иметь имени. Когда Тьма поглотила город, её учителя первыми приняли сторону Астрии, надеясь получить власть. Дарья отказалась. Она сбежала, убив того, кто учил её «никогда не сомневаться». С тех пор она не верит авторитетам, не доверяет обещаниям — но дружба с Лирой стала для неё первым настоящим привязанностью. Она осталась с группой не ради спасения мира — а ради одной девушки с луком, которая сказала ей: «Ты не тень. Ты — Дарья»."
       },
@@ -343,8 +441,8 @@
         name: "Кайлен",
         race: "Эльф",
         raceClass: "elf",
-        class: "Воин",
-        classIcon: "⚔️",
+        class: "Следопыт",
+        classIcon: "🐾",
         personality: "Мрачный, замкнутый, но искренне страдающий. Говорит мало, чаще молчит, но всегда готов помочь. Иногда срывается в гнев — особенно когда речь заходит о Тьме. Выглядит как человек, сломленный виной, но держащийся ради общей цели.",
         story: "Кайлен потерял всю семью в первые дни вторжения Тьмы. Он выжил только потому, что умел скрываться в лесу лучше любого зверя. Два года он странствовал в одиночестве, пока не услышал о группе, которая не сдалась. Он присоединился к ним, надеясь найти смысл в борьбе — и, может быть, отомстить за тех, кого любил. (Это точно его настоящее прошлое???)"
       },
@@ -403,6 +501,7 @@
   img.style.transform = 'scale(1)';
   img.style.marginTop = '0'; // 🟢 СБРАСЫВАЕМ ДЛЯ ВСЕХ
 
+ 
 
   document.getElementById('character-full').style.display = 'flex';
 }
@@ -413,7 +512,4 @@
   </script>
 
 </body>
-
 </html>
-
-
